@@ -1,0 +1,39 @@
+name: Build DupeMod
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Download Gradle Wrapper
+        run: gradle wrapper --gradle-version 8.8
+
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+
+      - name: Build mod
+        run: ./gradlew build
+
+      - name: Upload mod JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: dupemod-2.1.0
+          path: build/libs/dupemod-*.jar
+          if-no-files-found: error
