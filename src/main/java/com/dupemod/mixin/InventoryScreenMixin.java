@@ -53,7 +53,7 @@ public abstract class InventoryScreenMixin extends HandledScreen<PlayerScreenHan
     @Unique
     private void dupeAllSP(MinecraftClient mc) {
         mc.getServer().execute(() -> {
-            ServerPlayerEntity sp = mc.getServer().getPlayerManager().getPlayer(mc.player.getUniqueId());
+            ServerPlayerEntity sp = mc.getServer().getPlayerManager().getPlayer(mc.player.getUuid());
             if (sp == null) return;
             int count = 0;
             for (int i = 0; i < 36; i++) {
