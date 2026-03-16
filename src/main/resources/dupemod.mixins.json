@@ -1,0 +1,7 @@
+{
+    "required": true,
+    "package": "com.dupemod.mixin",
+    "compatibilityLevel": "JAVA_17",
+    "client": ["InventoryScreenMixin"],
+    "injectors": { "defaultRequire": 1 }
+}
