@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Setup JDK 17
@@ -20,20 +20,19 @@ jobs:
           distribution: 'temurin'
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v4
 
-      - name: Download Gradle Wrapper
+      - name: Generate Wrapper
         run: gradle wrapper --gradle-version 8.8
 
-      - name: Make gradlew executable
-        run: chmod +x gradlew
+      - name: Build
+        run: |
+          chmod +x gradlew
+          ./gradlew build --no-daemon --stacktrace
 
-      - name: Build mod
-        run: ./gradlew build
-
-      - name: Upload mod JAR
+      - name: Upload JAR
+        if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: dupemod-2.1.0
+          name: dupemod
           path: build/libs/dupemod-*.jar
-          if-no-files-found: error
