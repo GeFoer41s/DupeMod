@@ -19,16 +19,34 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
-
-      - name: Generate Wrapper
-        run: gradle wrapper --gradle-version 8.8
+      - name: Setup Gradle Wrapper
+        run: |
+          mkdir -p gradle/wrapper
+          
+          cat > gradle/wrapper/gradle-wrapper.properties << 'EOF'
+          distributionBase=GRADLE_USER_HOME
+          distributionPath=wrapper/dists
+          distributionUrl=https\://services.gradle.org/distributions/gradle-8.8-bin.zip
+          networkTimeout=10000
+          validateDistributionUrl=true
+          zipStoreBase=GRADLE_USER_HOME
+          zipStorePath=wrapper/dists
+          EOF
+          
+          curl -sL -o gradle/wrapper/gradle-wrapper.jar https://github.com/gradle/gradle/raw/v8.8.0/gradle/wrapper/gradle-wrapper.jar
+          
+          cat > gradlew << 'SCRIPT'
+          #!/bin/sh
+          DIRNAME=$(dirname "$0")
+          APP_HOME=$(cd "$DIRNAME" && pwd)
+          CLASSPATH=$APP_HOME/gradle/wrapper/gradle-wrapper.jar
+          exec java -classpath "$CLASSPATH" org.gradle.wrapper.GradleWrapperMain "$@"
+          SCRIPT
+          
+          chmod +x gradlew
 
       - name: Build
-        run: |
-          chmod +x gradlew
-          ./gradlew build --no-daemon --stacktrace
+        run: ./gradlew build --no-daemon --stacktrace
 
       - name: Upload JAR
         if: success()
