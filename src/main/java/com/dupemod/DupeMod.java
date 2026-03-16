@@ -120,7 +120,7 @@ public class DupeMod implements ClientModInitializer {
         ItemStack duped = offhand.copy();
         duped.setCount(duped.getMaxCount());
         mc.getServer().execute(() -> {
-            ServerPlayerEntity sp = mc.getServer().getPlayerManager().getPlayer(player.getUniqueId());
+            ServerPlayerEntity sp = mc.getServer().getPlayerManager().getPlayer(player.getUuid());
             if (sp == null) return;
             boolean ok = sp.getInventory().insertStack(duped.copy());
             sp.playerScreenHandler.sendContentUpdates();
